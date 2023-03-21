@@ -39,7 +39,8 @@ def reload_model(model, path=""):
         return model
     else:
         model_dict = model.state_dict()
-        pretrained_dict = torch.load(path, map_location='cuda:0')
+#        pretrained_dict = torch.load(path, map_location='cuda:0')
+        pretrained_dict = torch.load(path, map_location='cpu')
         print(len(pretrained_dict.keys()))
         pretrained_dict = {k[7:]: v for k, v in pretrained_dict.items() if k[7:] in model_dict}
         print(len(pretrained_dict.keys()))
@@ -54,7 +55,8 @@ def reload_segmodel(model, path=""):
         return model
     else:
         model_dict = model.state_dict()
-        pretrained_dict = torch.load(path, map_location='cuda:0')
+#        pretrained_dict = torch.load(path, map_location='cuda:0')
+        pretrained_dict = torch.load(path, map_location='cpu')
         print(len(pretrained_dict.keys()))
         pretrained_dict = {k[6:]: v for k, v in pretrained_dict.items() if k[6:] in model_dict}
         print(len(pretrained_dict.keys()))
@@ -73,13 +75,15 @@ def rec(opt):
     if not os.path.exists(opt.isave_path):  # create save path
         os.mkdir(opt.isave_path)
     
-    GeoTr_Seg_model = GeoTr_Seg().cuda()
+#    GeoTr_Seg_model = GeoTr_Seg().cuda()
+    GeoTr_Seg_model = GeoTr_Seg()
     # reload segmentation model
     reload_segmodel(GeoTr_Seg_model.msk, opt.Seg_path)
     # reload geometric unwarping model
     reload_model(GeoTr_Seg_model.GeoTr, opt.GeoTr_path)
     
-    IllTr_model = IllTr().cuda()
+#    IllTr_model = IllTr().cuda()
+    IllTr_model = IllTr()
     # reload illumination rectification model
     reload_model(IllTr_model, opt.IllTr_path)
     
@@ -99,7 +103,8 @@ def rec(opt):
         
         with torch.no_grad():
             # geometric unwarping
-            bm = GeoTr_Seg_model(im.cuda())
+#            bm = GeoTr_Seg_model(im.cuda())
+            bm = GeoTr_Seg_model(im)
             bm = bm.cpu()
             bm0 = cv2.resize(bm[0, 0].numpy(), (w, h))  # x flow
             bm1 = cv2.resize(bm[0, 1].numpy(), (w, h))  # y flow

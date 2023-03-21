@@ -1,0 +1,11 @@
+#ignore all files in any directory named model_pretrained
+model_pretrained/
+
+#ignore all .pth files
+*.pth
+
+ #ignore all .png/jpg/JPG/jpeg files
+*.png
+*.jpg
+*.jpeg
+*.JPG
